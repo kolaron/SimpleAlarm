@@ -1,4 +1,4 @@
-package kolar.simplealarm.View.Adapter;
+package kolar.simplealarm.Controller.Adapter;
 
 import android.animation.ObjectAnimator;
 import android.app.TimePickerDialog;
@@ -58,12 +58,12 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
                 if (isChecked) {
                     holder.linearLayout_expand.setVisibility(View.VISIBLE);
                     holder.changePropertiesText(holder.context, holder.checkbox_repeat, holder.checkbox_defer, holder.textView_properties);
-                    alarmClass.setPostpone(AlarmClass.postPone.FIVE_MINUTES);
+                    alarmClass.setPostponeMode(AlarmClass.POSTPONE_MODE_FIVE_MINUTES);
                 } else {
                     holder.linearLayout_expand.startAnimation(AnimationUtils.loadAnimation(holder.context, R.anim.fade_in));
                     holder.linearLayout_expand.setVisibility(View.GONE);
                     holder.changePropertiesText(holder.context, holder.checkbox_repeat, holder.checkbox_defer, holder.textView_properties);
-                    alarmClass.setPostpone(AlarmClass.postPone.NONE);
+                    alarmClass.setPostponeMode(AlarmClass.POSTPONE_MODE_NONE);
                 }
             }
         });
@@ -117,35 +117,6 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
 
             }
         });
-        holder.radioBttn5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    alarmClass.setPostpone(AlarmClass.postPone.FIVE_MINUTES);
-            }
-        });
-        holder.radioBttn10.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    alarmClass.setPostpone(AlarmClass.postPone.TEN_MINUTES);
-            }
-        });
-        holder.radioBttn15.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    alarmClass.setPostpone(AlarmClass.postPone.FIFTEEN_MINUTES);
-            }
-        });
-        holder.radioBttn30.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    alarmClass.setPostpone(AlarmClass.postPone.THIRTY_MINUTES);
-            }
-        });
-
         holder.imageView_remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,7 +125,29 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
                 notifyDataSetChanged();
             }
         });
+
+        listener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    if (buttonView.equals(holder.radioBttn5))
+                        alarmClass.setPostponeMode(AlarmClass.POSTPONE_MODE_FIVE_MINUTES);
+                    else if (buttonView.equals(holder.radioBttn10))
+                        alarmClass.setPostponeMode(AlarmClass.POSTPONE_MODE_TEN_MINUTES);
+                    else if (buttonView.equals(holder.radioBttn15))
+                        alarmClass.setPostponeMode(AlarmClass.POSTPONE_MODE_FIFTEEN_MINUTES);
+                    else if (buttonView.equals(holder.radioBttn30))
+                        alarmClass.setPostponeMode(AlarmClass.POSTPONE_MODE_THIRTY_MINUTES);
+            }
+        };
+
+        holder.radioBttn5.setOnCheckedChangeListener(listener);
+        holder.radioBttn10.setOnCheckedChangeListener(listener);
+        holder.radioBttn15.setOnCheckedChangeListener(listener);
+        holder.radioBttn30.setOnCheckedChangeListener(listener);
     }
+
+    private CompoundButton.OnCheckedChangeListener listener;
 
     @Override
     public int getItemCount() {

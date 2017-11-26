@@ -1,23 +1,50 @@
 package kolar.simplealarm.Model;
 
-import android.os.NetworkOnMainThreadException;
+import android.support.annotation.IntDef;
 
 import java.io.Serializable;
+import java.lang.annotation.Retention;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * Created by Kolar on 25.11.2017.
  */
 
-public class AlarmClass implements Serializable, Cloneable {
+public class AlarmClass implements Serializable {
+
+    @IntDef({POSTPONE_MODE_NONE, POSTPONE_MODE_FIVE_MINUTES, POSTPONE_MODE_TEN_MINUTES, POSTPONE_MODE_FIFTEEN_MINUTES, POSTPONE_MODE_THIRTY_MINUTES})
+    @Retention(SOURCE)
+    public @interface PostponeMode {
+    }
+
+    public static final int POSTPONE_MODE_NONE = -1;
+    public static final int POSTPONE_MODE_FIVE_MINUTES = 5;
+    public static final int POSTPONE_MODE_TEN_MINUTES = 10;
+    public static final int POSTPONE_MODE_FIFTEEN_MINUTES = 15;
+    public static final int POSTPONE_MODE_THIRTY_MINUTES = 30;
+
     private boolean activate = false;
     private Calendar date = GregorianCalendar.getInstance();
     private boolean repeat = false;
-    private postPone postpone = postPone.NONE;
+
+    @PostponeMode
+    private int postpone;
 
     public AlarmClass() {
         date.set(Calendar.SECOND, 0);
+        this.postpone = POSTPONE_MODE_NONE;
+    }
+
+    public void setPostponeMode(@PostponeMode int mode) {
+        this.postpone = mode;
+    }
+
+    @PostponeMode
+    public int getPostponeMode() {
+        return this.postpone;
     }
 
     public boolean isActivate() {
@@ -48,16 +75,5 @@ public class AlarmClass implements Serializable, Cloneable {
         this.date = date;
     }
 
-    public postPone getPostpone() {
-        return postpone;
-    }
-
-    public void setPostpone(postPone postpone) {
-        this.postpone = postpone;
-    }
-
-    public enum postPone {
-        NONE, FIVE_MINUTES, TEN_MINUTES, FIFTEEN_MINUTES, THIRTY_MINUTES
-    }
 
 }

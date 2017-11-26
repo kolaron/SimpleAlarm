@@ -46,7 +46,7 @@ public class AlarmActivity extends Activity implements View.OnClickListener {
         bttnOff = findViewById(R.id.bttnOff);
         relativeLayout_postpone = findViewById(R.id.relativeLayout_postpone);
 
-        if (alarmClass.getPostpone() != AlarmClass.postPone.NONE)
+        if (alarmClass.getPostponeMode() != AlarmClass.POSTPONE_MODE_NONE)
             relativeLayout_postpone.setVisibility(View.VISIBLE);
         else
             relativeLayout_postpone.setVisibility(View.GONE);
@@ -69,7 +69,7 @@ public class AlarmActivity extends Activity implements View.OnClickListener {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (alarmClass.getPostpone() != AlarmClass.postPone.NONE)
+        if (alarmClass.getPostponeMode() != AlarmClass.POSTPONE_MODE_NONE)
             if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) || (keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
                 postPoneAlarm();
             }

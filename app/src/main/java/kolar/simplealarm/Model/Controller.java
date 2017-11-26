@@ -59,20 +59,7 @@ public class Controller {
 
     public void postPoneAlarm(AlarmClass alarmClass) {
         AlarmClass alarm = alarmClass;
-        switch (alarm.getPostpone()) {
-            case FIVE_MINUTES:
-                alarm.getDate().add(Calendar.MINUTE, 5);
-                break;
-            case TEN_MINUTES:
-                alarm.getDate().add(Calendar.MINUTE, 10);
-                break;
-            case FIFTEEN_MINUTES:
-                alarm.getDate().add(Calendar.MINUTE, 15);
-                break;
-            case THIRTY_MINUTES:
-                alarm.getDate().add(Calendar.MINUTE, 30);
-                break;
-        }
+        alarm.getDate().add(Calendar.MINUTE, alarm.getPostponeMode());
         AlarmManager manager = initIntents(alarm);
         if (android.os.Build.VERSION.SDK_INT >= 19) {
             manager.setExact(AlarmManager.RTC_WAKEUP, alarm.getDate().getTimeInMillis(), pendingIntent);

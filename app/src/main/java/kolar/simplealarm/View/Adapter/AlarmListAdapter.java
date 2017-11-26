@@ -26,6 +26,7 @@ import android.widget.TimePicker;
 import java.util.ArrayList;
 
 import kolar.simplealarm.Model.AlarmClass;
+import kolar.simplealarm.Model.Controller;
 import kolar.simplealarm.R;
 
 /**
@@ -37,11 +38,11 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
     private ArrayList<AlarmClass> list = new ArrayList<>();
 
     public AlarmListAdapter() {
-        list.add(null);
-        list.add(null);
-        list.add(null);
-        list.add(null);
-        list.add(null);
+        list.add(new AlarmClass());
+        list.add(new AlarmClass());
+        list.add(new AlarmClass());
+        list.add(new AlarmClass());
+        list.add(new AlarmClass());
     }
 
     @Override
@@ -53,16 +54,17 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        final AlarmClass alarmClass = list.get(position);
         holder.checkbox_defer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     holder.linearLayout_expand.setVisibility(View.VISIBLE);
-                    holder.changePropertiesText(holder.context,holder.checkbox_repeat,holder.checkbox_defer,holder.textView_properties);
+                    holder.changePropertiesText(holder.context, holder.checkbox_repeat, holder.checkbox_defer, holder.textView_properties);
                 } else {
                     holder.linearLayout_expand.startAnimation(AnimationUtils.loadAnimation(holder.context, R.anim.fade_in));
                     holder.linearLayout_expand.setVisibility(View.GONE);
-                    holder.changePropertiesText(holder.context,holder.checkbox_repeat,holder.checkbox_defer,holder.textView_properties);
+                    holder.changePropertiesText(holder.context, holder.checkbox_repeat, holder.checkbox_defer, holder.textView_properties);
                 }
             }
         });
@@ -70,7 +72,7 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
         holder.checkbox_repeat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                holder.changePropertiesText(holder.context,holder.checkbox_repeat,holder.checkbox_defer,holder.textView_properties);
+                holder.changePropertiesText(holder.context, holder.checkbox_repeat, holder.checkbox_defer, holder.textView_properties);
             }
         });
 
@@ -78,6 +80,38 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
             @Override
             public void onClick(View v) {
                 holder.expandeLayout(holder.linearLayout_expandMain, holder.relativeLayout_expandButton, holder.textView_properties, holder.imageView_remove);
+            }
+        });
+
+        holder.switch_activate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Controller.getInstance(holder.context).startAlarm(holder.textView_time.getText().toString(), holder.checkbox_repeat.isChecked(), alarmClass);
+                } else {
+                    // TODO: 26.11.2017 vypnout
+                    Controller.getInstance(holder.context).stopAlarm();
+                }
+            }
+        });
+
+        holder.textView_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    String[] time = holder.textView_time.getText().toString().split(":");
+                    TimePickerDialog mTimePicker;
+                    mTimePicker = new TimePickerDialog(holder.context, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                            holder.textView_time.setText(selectedHour + ":" + selectedMinute);
+                        }
+                    }, Integer.parseInt(time[0]), Integer.parseInt(time[1]), true);//Yes 24 hour time
+                    mTimePicker.show();
+                } catch (Exception ex) {
+
+                }
+
             }
         });
     }

@@ -45,7 +45,7 @@ public class ClockView extends View {
         height = getHeight();
         width = getWidth();
         padding = spacing + 50;
-        fontsize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 13, getResources().getDisplayMetrics());
+        fontsize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 15, getResources().getDisplayMetrics());
         int min = Math.min(height, width);
         radius = min / 2 - padding;
         handTruncation = min / 20;
@@ -101,7 +101,7 @@ public class ClockView extends View {
     private void drawCircle(Canvas canvas) {
         paint.reset();
         paint.setColor(Color.WHITE);
-        paint.setStrokeWidth(5);
+        paint.setStrokeWidth(8);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
         canvas.drawCircle(width / 2, height / 2, radius + padding - 10, paint);

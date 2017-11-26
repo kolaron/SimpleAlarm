@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import kolar.simplealarm.Model.AlarmClass;
 import kolar.simplealarm.Model.AlarmSoundService;
@@ -22,7 +24,7 @@ import static kolar.simplealarm.Model.Controller.INTENT_ALARMCLASS;
 
 public class AlarmActivity extends Activity implements View.OnClickListener {
 
-    private Button bttnDefer, bttnOff;
+    private RelativeLayout bttnDefer, bttnOff, relativeLayout_postpone;
 
     private AlarmClass alarmClass;
 
@@ -44,11 +46,12 @@ public class AlarmActivity extends Activity implements View.OnClickListener {
     private void initViews() {
         bttnDefer = findViewById(R.id.bttnDefer);
         bttnOff = findViewById(R.id.bttnOff);
+        relativeLayout_postpone = findViewById(R.id.relativeLayout_postpone);
 
         if (alarmClass.getPostpone() != AlarmClass.postPone.NONE)
-            bttnDefer.setVisibility(View.VISIBLE);
+            relativeLayout_postpone.setVisibility(View.VISIBLE);
         else
-            bttnDefer.setVisibility(View.GONE);
+            relativeLayout_postpone.setVisibility(View.GONE);
     }
 
     private void initListeners() {
@@ -59,11 +62,12 @@ public class AlarmActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.equals(bttnDefer)) {
-            Log.wtf("POSTPONE DEBUG", String.valueOf(alarmClass.hashCode()));
             Controller.getInstance(AlarmActivity.this).postPoneAlarm(alarmClass);
             stopService(new Intent(AlarmActivity.this, AlarmSoundService.class));
+            finish();
         } else if (v.equals(bttnOff)) {
             stopService(new Intent(AlarmActivity.this, AlarmSoundService.class));
+            finish();
         }
     }
 }

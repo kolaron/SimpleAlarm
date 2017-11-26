@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -62,12 +63,25 @@ public class AlarmActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.equals(bttnDefer)) {
-            Controller.getInstance(AlarmActivity.this).postPoneAlarm(alarmClass);
-            stopService(new Intent(AlarmActivity.this, AlarmSoundService.class));
-            finish();
+            postPoneAlarm();
         } else if (v.equals(bttnOff)) {
             stopService(new Intent(AlarmActivity.this, AlarmSoundService.class));
             finish();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (alarmClass.getPostpone() != AlarmClass.postPone.NONE)
+            if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) || (keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
+                postPoneAlarm();
+            }
+        return true;
+    }
+
+    public void postPoneAlarm() {
+        Controller.getInstance(AlarmActivity.this).postPoneAlarm(alarmClass);
+        stopService(new Intent(AlarmActivity.this, AlarmSoundService.class));
+        finish();
     }
 }

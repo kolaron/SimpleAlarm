@@ -3,9 +3,6 @@ package kolar.simplealarm.View.Adapter;
 import android.animation.ObjectAnimator;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +21,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import kolar.simplealarm.Model.AlarmClass;
 import kolar.simplealarm.Model.Controller;
@@ -44,11 +37,6 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
     private ArrayList<AlarmClass> list = new ArrayList<>();
 
     public AlarmListAdapter() {
-        list.add(new AlarmClass());
-        list.add(new AlarmClass());
-        list.add(new AlarmClass());
-        list.add(new AlarmClass());
-        list.add(new AlarmClass());
     }
 
     @Override
@@ -59,8 +47,11 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final AlarmClass alarmClass = list.get(position);
+
+        holder.textView_time.setText(alarmClass.getDate().get(Calendar.HOUR_OF_DAY) + ":" + alarmClass.getDate().get(Calendar.MINUTE));
+
         holder.checkbox_defer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -152,6 +143,15 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked)
                     alarmClass.setPostpone(AlarmClass.postPone.THIRTY_MINUTES);
+            }
+        });
+
+        holder.imageView_remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Controller.getInstance(holder.context).removeAlarm(alarmClass);
+                list.remove(position);
+                notifyDataSetChanged();
             }
         });
     }

@@ -85,11 +85,11 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
         holder.switch_activate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                alarmClass.setActivate(isChecked);
+                if (isChecked)
                     Controller.getInstance(holder.context).startAlarm(alarmClass);
-                } else {
+                else
                     Controller.getInstance(holder.context).removeAlarm(alarmClass);
-                }
             }
         });
 

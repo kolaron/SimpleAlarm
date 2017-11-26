@@ -1,5 +1,7 @@
 package kolar.simplealarm.Model;
 
+import android.os.NetworkOnMainThreadException;
+
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -9,13 +11,12 @@ import java.util.GregorianCalendar;
  */
 
 public class AlarmClass implements Serializable, Cloneable {
-    private boolean activate;
-    private Calendar date;
-    private boolean repeat;
-    private postPone postpone;
+    private boolean activate = false;
+    private Calendar date = GregorianCalendar.getInstance();
+    private boolean repeat = false;
+    private postPone postpone = postPone.NONE;
 
     public AlarmClass() {
-        date = GregorianCalendar.getInstance();
         date.set(Calendar.SECOND, 0);
     }
 

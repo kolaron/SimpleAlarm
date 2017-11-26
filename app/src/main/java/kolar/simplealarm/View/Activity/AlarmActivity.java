@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import kolar.simplealarm.Model.AlarmClass;
 import kolar.simplealarm.Model.AlarmSoundService;
@@ -79,7 +76,7 @@ public class AlarmActivity extends Activity implements View.OnClickListener {
         return true;
     }
 
-    public void postPoneAlarm() {
+    private void postPoneAlarm() {
         Controller.getInstance(AlarmActivity.this).postPoneAlarm(alarmClass);
         stopService(new Intent(AlarmActivity.this, AlarmSoundService.class));
         finish();

@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,17 +58,26 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     holder.linearLayout_expand.setVisibility(View.VISIBLE);
+                    holder.changePropertiesText(holder.context,holder.checkbox_repeat,holder.checkbox_defer,holder.textView_properties);
                 } else {
                     holder.linearLayout_expand.startAnimation(AnimationUtils.loadAnimation(holder.context, R.anim.fade_in));
                     holder.linearLayout_expand.setVisibility(View.GONE);
+                    holder.changePropertiesText(holder.context,holder.checkbox_repeat,holder.checkbox_defer,holder.textView_properties);
                 }
+            }
+        });
+
+        holder.checkbox_repeat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                holder.changePropertiesText(holder.context,holder.checkbox_repeat,holder.checkbox_defer,holder.textView_properties);
             }
         });
 
         holder.relativeLayout_expandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.expandeLayout(holder.linearLayout_expandMain, holder.relativeLayout_expandButton);
+                holder.expandeLayout(holder.linearLayout_expandMain, holder.relativeLayout_expandButton, holder.textView_properties, holder.imageView_remove);
             }
         });
     }
@@ -108,18 +118,43 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
             linearLayout_expandMain = itemView.findViewById(R.id.linearLayout_expandMain);
         }
 
-        private void expandeLayout(LinearLayout linearLayout_expandMain, RelativeLayout expandButton) {
+        private void expandeLayout(LinearLayout linearLayout_expandMain, RelativeLayout expandButton, TextView textView_properties, ImageView imageView_remove) {
             Animation animFadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
             Animation animFadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in);
             if (linearLayout_expandMain.getVisibility() == View.GONE) {
                 linearLayout_expandMain.startAnimation(animFadeIn);
                 createRotateAnimator(expandButton, 0f, 180f).start();
+                textView_properties.setVisibility(View.GONE);
+                imageView_remove.setVisibility(View.VISIBLE);
                 linearLayout_expandMain.setVisibility(View.VISIBLE);
             } else {
                 linearLayout_expandMain.startAnimation(animFadeOut);
                 createRotateAnimator(expandButton, 180f, 0f).start();
+                textView_properties.setVisibility(View.VISIBLE);
+                imageView_remove.setVisibility(View.GONE);
                 linearLayout_expandMain.setVisibility(View.GONE);
             }
+        }
+
+        private void changePropertiesText(Context context, CheckBox checkbox_repeat, CheckBox checkbox_defer, TextView textView) {
+            String repeat;
+            String defer;
+            if (checkbox_repeat.isChecked()) {
+                repeat = context.getResources().getString(R.string.repeat);
+            } else {
+                repeat = "";
+            }
+
+            if (checkbox_defer.isChecked()) {
+                if (repeat.equals("")) {
+                    defer = context.getResources().getString(R.string.defer);
+                } else {
+                    defer = ", " + context.getResources().getString(R.string.defer);
+                }
+            } else {
+                defer = "";
+            }
+            textView.setText(repeat + defer);
         }
 
         private ObjectAnimator createRotateAnimator(final View target, final float from, final float to) {

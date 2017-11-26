@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SimpleAlarm</string>
+    <string name="monday">P</string>
+    <string name="tuesday">Ú</string>
+    <string name="wednesday">S</string>
+    <string name="thursday">Č</string>
+    <string name="friday">P</string>
+    <string name="saturday">S</string>
+    <string name="sunday">N</string>
+</resources>

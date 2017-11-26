@@ -1,19 +1,22 @@
 package kolar.simplealarm.Model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Kolar on 25.11.2017.
  */
 
-public class AlarmClass implements Serializable {
+public class AlarmClass implements Serializable, Cloneable {
     private boolean activate;
-    private Date date;
+    private Calendar date;
     private boolean repeat;
-    private boolean defer;
+    private postPone postpone;
 
     public AlarmClass() {
+        date = GregorianCalendar.getInstance();
+        date.set(Calendar.SECOND, 0);
     }
 
     public boolean isActivate() {
@@ -24,11 +27,11 @@ public class AlarmClass implements Serializable {
         this.activate = activate;
     }
 
-    public Date getDate() {
+    public Calendar getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(GregorianCalendar date) {
         this.date = date;
     }
 
@@ -40,11 +43,20 @@ public class AlarmClass implements Serializable {
         this.repeat = repeat;
     }
 
-    public boolean isDefer() {
-        return defer;
+    public void setDate(Calendar date) {
+        this.date = date;
     }
 
-    public void setDefer(boolean defer) {
-        this.defer = defer;
+    public postPone getPostpone() {
+        return postpone;
     }
+
+    public void setPostpone(postPone postpone) {
+        this.postpone = postpone;
+    }
+
+    public enum postPone {
+        NONE, FIVE_MINUTES, TEN_MINUTES, FIFTEEN_MINUTES, THIRTY_MINUTES
+    }
+
 }

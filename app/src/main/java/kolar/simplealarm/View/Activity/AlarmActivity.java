@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
 import kolar.simplealarm.Model.AlarmClass;
 import kolar.simplealarm.Model.AlarmSoundService;
+import kolar.simplealarm.Model.Controller;
 import kolar.simplealarm.R;
 
 import static kolar.simplealarm.Model.Controller.INTENT_ALARMCLASS;
@@ -22,6 +24,8 @@ public class AlarmActivity extends Activity implements View.OnClickListener {
 
     private Button bttnDefer, bttnOff;
 
+    private AlarmClass alarmClass;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,19 +36,19 @@ public class AlarmActivity extends Activity implements View.OnClickListener {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         Intent intent = getIntent();
-        AlarmClass alarmClass = (AlarmClass) intent.getBundleExtra(INTENT_ALARMCLASS).getSerializable(INTENT_ALARMCLASS);
+        alarmClass = (AlarmClass) intent.getBundleExtra(INTENT_ALARMCLASS).getSerializable(INTENT_ALARMCLASS);
         initViews();
         initListeners();
-        if (alarmClass.isDefer()) {
-
-        } else {
-
-        }
     }
 
     private void initViews() {
         bttnDefer = findViewById(R.id.bttnDefer);
         bttnOff = findViewById(R.id.bttnOff);
+
+        if (alarmClass.getPostpone() != AlarmClass.postPone.NONE)
+            bttnDefer.setVisibility(View.VISIBLE);
+        else
+            bttnDefer.setVisibility(View.GONE);
     }
 
     private void initListeners() {
@@ -55,7 +59,9 @@ public class AlarmActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.equals(bttnDefer)) {
-
+            Log.wtf("POSTPONE DEBUG", String.valueOf(alarmClass.hashCode()));
+            Controller.getInstance(AlarmActivity.this).postPoneAlarm(alarmClass);
+            stopService(new Intent(AlarmActivity.this, AlarmSoundService.class));
         } else if (v.equals(bttnOff)) {
             stopService(new Intent(AlarmActivity.this, AlarmSoundService.class));
         }

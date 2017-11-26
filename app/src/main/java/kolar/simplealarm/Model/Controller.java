@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -36,32 +37,57 @@ public class Controller {
         myIntent = new Intent(context, AlarmReceiver.class);
     }
 
-    public void startAlarm(String time, boolean repeat, AlarmClass alarmClass) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(INTENT_ALARMCLASS, alarmClass);
-        myIntent.putExtra(INTENT_ALARMCLASS, bundle);
-        myIntent.putExtra("alarmSet", false);
-        myIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        pendingIntent = PendingIntent.getBroadcast(context, 0, myIntent, 0);
-        Calendar calendar = Calendar.getInstance();
-        String[] parse = time.split(":");
-        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parse[0]));
-        calendar.set(Calendar.MINUTE, Integer.parseInt(parse[1]));
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-        if (repeat) {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 10 * 1000, pendingIntent);
+    public void startAlarm(AlarmClass alarmClass) {
+        AlarmManager alarmManager = initIntents(alarmClass);
+        if (alarmClass.isRepeat()) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmClass.getDate().getTimeInMillis(), 10 * 1000, pendingIntent);
         } else {
             if (android.os.Build.VERSION.SDK_INT >= 19) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmClass.getDate().getTimeInMillis(), pendingIntent);
             } else {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, alarmClass.getDate().getTimeInMillis(), pendingIntent);
             }
+        }
+        Log.wtf("POSTPONE DEBUG", String.valueOf(alarmClass.hashCode()));
+    }
+
+    public void removeAlarm(AlarmClass alarmClass) {
+        context.stopService(new Intent(context, AlarmSoundService.class));
+        AlarmManager manager = initIntents(alarmClass);
+        manager.cancel(pendingIntent);
+    }
+
+    public void postPoneAlarm(AlarmClass alarmClass) {
+        AlarmClass alarm = alarmClass;
+        switch (alarm.getPostpone()) {
+            case FIVE_MINUTES:
+                alarm.getDate().add(Calendar.MINUTE, 5);
+                break;
+            case TEN_MINUTES:
+                alarm.getDate().add(Calendar.MINUTE, 10);
+                break;
+            case FIFTEEN_MINUTES:
+                alarm.getDate().add(Calendar.MINUTE, 15);
+                break;
+            case THIRTY_MINUTES:
+                alarm.getDate().add(Calendar.MINUTE, 30);
+                break;
+        }
+        AlarmManager manager = initIntents(alarm);
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            manager.setExact(AlarmManager.RTC_WAKEUP, alarm.getDate().getTimeInMillis(), pendingIntent);
+        } else {
+            manager.set(AlarmManager.RTC_WAKEUP, alarm.getDate().getTimeInMillis(), pendingIntent);
         }
     }
 
-    public void stopAlarm() {
-        context.stopService(new Intent(context, AlarmSoundService.class));
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        manager.cancel(pendingIntent);
+    private AlarmManager initIntents(AlarmClass alarm) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(INTENT_ALARMCLASS, alarm);
+        myIntent.putExtra(INTENT_ALARMCLASS, bundle);
+//        myIntent.putExtra("alarmSet", false);
+        myIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        pendingIntent = PendingIntent.getBroadcast(context, alarm.hashCode(), myIntent, 0);
+        return (AlarmManager) context.getSystemService(ALARM_SERVICE);
     }
 }

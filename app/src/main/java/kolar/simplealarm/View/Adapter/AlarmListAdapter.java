@@ -3,6 +3,7 @@ package kolar.simplealarm.View.Adapter;
 import android.animation.ObjectAnimator;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +24,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import kolar.simplealarm.Model.AlarmClass;
 import kolar.simplealarm.Model.Controller;
@@ -61,10 +67,12 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
                 if (isChecked) {
                     holder.linearLayout_expand.setVisibility(View.VISIBLE);
                     holder.changePropertiesText(holder.context, holder.checkbox_repeat, holder.checkbox_defer, holder.textView_properties);
+                    alarmClass.setPostpone(AlarmClass.postPone.FIVE_MINUTES);
                 } else {
                     holder.linearLayout_expand.startAnimation(AnimationUtils.loadAnimation(holder.context, R.anim.fade_in));
                     holder.linearLayout_expand.setVisibility(View.GONE);
                     holder.changePropertiesText(holder.context, holder.checkbox_repeat, holder.checkbox_defer, holder.textView_properties);
+                    alarmClass.setPostpone(AlarmClass.postPone.NONE);
                 }
             }
         });
@@ -87,10 +95,9 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    Controller.getInstance(holder.context).startAlarm(holder.textView_time.getText().toString(), holder.checkbox_repeat.isChecked(), alarmClass);
+                    Controller.getInstance(holder.context).startAlarm(alarmClass);
                 } else {
-                    // TODO: 26.11.2017 vypnout
-                    Controller.getInstance(holder.context).stopAlarm();
+                    Controller.getInstance(holder.context).removeAlarm(alarmClass);
                 }
             }
         });
@@ -99,14 +106,19 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
             @Override
             public void onClick(View v) {
                 try {
-                    String[] time = holder.textView_time.getText().toString().split(":");
                     TimePickerDialog mTimePicker;
                     mTimePicker = new TimePickerDialog(holder.context, new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                            holder.textView_time.setText(selectedHour + ":" + selectedMinute);
+                            try {
+                                alarmClass.getDate().set(Calendar.HOUR_OF_DAY, selectedHour);
+                                alarmClass.getDate().set(Calendar.MINUTE, selectedMinute);
+                                holder.textView_time.setText(selectedHour + ":" + selectedMinute);
+                            } catch (Exception ex) {
+                                ex.fillInStackTrace();
+                            }
                         }
-                    }, Integer.parseInt(time[0]), Integer.parseInt(time[1]), true);//Yes 24 hour time
+                    }, alarmClass.getDate().get(Calendar.HOUR_OF_DAY), alarmClass.getDate().get(Calendar.MINUTE), true);//Yes 24 hour time
                     mTimePicker.show();
                 } catch (Exception ex) {
 
@@ -114,11 +126,44 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
 
             }
         });
+        holder.radioBttn5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    alarmClass.setPostpone(AlarmClass.postPone.FIVE_MINUTES);
+            }
+        });
+        holder.radioBttn10.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    alarmClass.setPostpone(AlarmClass.postPone.TEN_MINUTES);
+            }
+        });
+        holder.radioBttn15.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    alarmClass.setPostpone(AlarmClass.postPone.FIFTEEN_MINUTES);
+            }
+        });
+        holder.radioBttn30.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    alarmClass.setPostpone(AlarmClass.postPone.THIRTY_MINUTES);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public void addData(AlarmClass alarmClass) {
+        list.add(alarmClass);
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

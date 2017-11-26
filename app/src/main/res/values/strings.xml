@@ -7,4 +7,10 @@
     <string name="friday">P</string>
     <string name="saturday">S</string>
     <string name="sunday">N</string>
+    <string name="repeat">Každý den</string>
+    <string name="defer">Odkládat</string>
+    <string name="radio5">5 min</string>
+    <string name="radio10">10 min</string>
+    <string name="radio15">15 min</string>
+    <string name="radio30">30 min</string>
 </resources>

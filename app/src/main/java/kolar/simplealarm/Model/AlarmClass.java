@@ -29,6 +29,7 @@ public class AlarmClass implements Serializable {
     private boolean activate = false;
     private Calendar date = GregorianCalendar.getInstance();
     private boolean repeat = false;
+    private long id;
 
     @PostponeMode
     private int postpone;
@@ -45,6 +46,14 @@ public class AlarmClass implements Serializable {
     @PostponeMode
     public int getPostponeMode() {
         return this.postpone;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public boolean isActivate() {
@@ -75,5 +84,8 @@ public class AlarmClass implements Serializable {
         this.date = date;
     }
 
-
+    @Override
+    public String toString() {
+        return id + ";" + date.getTimeInMillis() + ";" + postpone + ";" + repeat + ";" + activate;
+    }
 }

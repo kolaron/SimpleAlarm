@@ -51,6 +51,24 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
         final AlarmClass alarmClass = list.get(position);
 
         holder.textView_time.setText(alarmClass.getDate().get(Calendar.HOUR_OF_DAY) + ":" + alarmClass.getDate().get(Calendar.MINUTE));
+        holder.checkbox_repeat.setChecked(alarmClass.isRepeat());
+        holder.switch_activate.setChecked(alarmClass.isActivate());
+        if (alarmClass.getPostponeMode() != AlarmClass.POSTPONE_MODE_NONE) {
+            holder.checkbox_defer.setChecked(true);
+            holder.linearLayout_expand.setVisibility(View.VISIBLE);
+            holder.changePropertiesText(holder.context, holder.checkbox_repeat, holder.checkbox_defer, holder.textView_properties);
+            if (alarmClass.getPostponeMode() == AlarmClass.POSTPONE_MODE_FIVE_MINUTES)
+                holder.radioBttn5.setChecked(true);
+            else if (alarmClass.getPostponeMode() == AlarmClass.POSTPONE_MODE_TEN_MINUTES)
+                holder.radioBttn10.setChecked(true);
+            else if (alarmClass.getPostponeMode() == AlarmClass.POSTPONE_MODE_FIFTEEN_MINUTES)
+                holder.radioBttn15.setChecked(true);
+            else if (alarmClass.getPostponeMode() == AlarmClass.POSTPONE_MODE_THIRTY_MINUTES)
+                holder.radioBttn30.setChecked(true);
+        } else{
+            holder.radioBttn5.setChecked(true);
+            holder.changePropertiesText(holder.context, holder.checkbox_repeat, holder.checkbox_defer, holder.textView_properties);
+        }
 
         holder.checkbox_defer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -72,6 +90,7 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 holder.changePropertiesText(holder.context, holder.checkbox_repeat, holder.checkbox_defer, holder.textView_properties);
+                alarmClass.setRepeat(isChecked);
             }
         });
 
@@ -157,6 +176,18 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
     public void addData(AlarmClass alarmClass) {
         list.add(alarmClass);
         notifyDataSetChanged();
+    }
+
+    public void savePref(Context context) {
+        Controller.getInstance(context).saveAlarmClasses(list);
+    }
+
+    public void restoreAlarms(Context context) {
+        ArrayList<AlarmClass> l = Controller.getInstance(context).getAlarmClasses();
+        if (l != null) {
+            this.list = l;
+            notifyDataSetChanged();
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initViews();
         alarmsListFragment = new AlarmsListFragment();
+        alarmsListFragment.RestoreAlarms(getApplicationContext());
         setFragment(alarmsListFragment);
     }
 
@@ -61,5 +62,12 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentPlaceHolder, fragment).commit();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (alarmsListFragment != null)
+            alarmsListFragment.SaveAlarms(getApplicationContext());
     }
 }

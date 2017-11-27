@@ -1,5 +1,6 @@
 package kolar.simplealarm.View.Fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,17 @@ public class AlarmsListFragment extends Fragment {
     }
 
     public void addAlarm(AlarmClass alarmClass) {
-        alarmListAdapter.addData(alarmClass);
+        if (alarmListAdapter != null)
+            alarmListAdapter.addData(alarmClass);
+    }
+
+    public void SaveAlarms(Context context) {
+        if (alarmListAdapter != null)
+            alarmListAdapter.savePref(context);
+    }
+
+    public void RestoreAlarms(Context context) {
+        if (alarmListAdapter != null)
+            alarmListAdapter.restoreAlarms(context);
     }
 }

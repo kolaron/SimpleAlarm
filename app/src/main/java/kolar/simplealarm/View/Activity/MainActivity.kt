@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initViews()
         alarmsListFragment = AlarmsListFragment()
-        alarmsListFragment.RestoreAlarms(applicationContext)
+        alarmsListFragment.restoreAlarms(applicationContext)
         setFragment(alarmsListFragment)
     }
 
@@ -41,10 +41,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun switchFragment(fragment: Int) {
-        val newFragment: Fragment?
-        when (fragment) {
-            ALARMS_LIST_FRAGMENT -> newFragment = alarmsListFragment
-            else -> newFragment = AlarmsListFragment()
+        val newFragment: Fragment = when (fragment) {
+            ALARMS_LIST_FRAGMENT -> alarmsListFragment
+            else -> AlarmsListFragment()
         }
         setFragment(newFragment)
     }
@@ -57,6 +56,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        alarmsListFragment.SaveAlarms(applicationContext)
+        alarmsListFragment.saveAlarms(applicationContext)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        alarmsListFragment.restoreAlarms(applicationContext)
     }
 }

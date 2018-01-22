@@ -33,11 +33,11 @@ class AlarmsListFragment : Fragment() {
         alarmListAdapter.addData(alarmClass)
     }
 
-    fun SaveAlarms(context: Context) {
+    fun saveAlarms(context: Context) {
         alarmListAdapter.savePref(context)
     }
 
-    fun RestoreAlarms(context: Context) {
+    fun restoreAlarms(context: Context) {
         alarmListAdapter.restoreAlarms(context)
     }
 }

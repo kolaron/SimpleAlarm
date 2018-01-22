@@ -12,6 +12,7 @@ import kolar.simplealarm.Model.Controller
 import kolar.simplealarm.Model.Controller.INTENT_ALARMCLASS
 import kolar.simplealarm.R
 import kotlinx.android.synthetic.main.activity_alarm.*
+import java.util.*
 
 /**
  * Created by ondrej.kolar on 22.01.2018.
@@ -38,9 +39,7 @@ class AlarmActivity : AppCompatActivity() {
             postPoneAlarm()
         }
         bttnOff.setOnClickListener {
-            Controller.stopAlarm(alarmClass, this)
-            stopService(Intent(this@AlarmActivity, AlarmSoundService::class.java))
-            finish()
+            stopAlarm()
         }
     }
 
@@ -55,11 +54,8 @@ class AlarmActivity : AppCompatActivity() {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
             if (alarmClass.getPostpone() != AlarmClass.POSTPONE_MODE_NONE) {
                 postPoneAlarm()
-                finish()
             } else {
-                Controller.stopAlarm(alarmClass, this)
-                stopService(Intent(this@AlarmActivity, AlarmSoundService::class.java))
-                finish()
+                stopAlarm()
             }
         }
         return true
@@ -69,5 +65,26 @@ class AlarmActivity : AppCompatActivity() {
         Controller.postPoneAlarm(alarmClass, applicationContext)
         stopService(Intent(this@AlarmActivity, AlarmSoundService::class.java))
         finish()
+    }
+
+    private fun stopAlarm() {
+        val list = Controller.getAlarmClasses(applicationContext)
+        list?.let {
+            if (!alarmClass.repeat) {
+                for (i in 0 until list.size) {
+                    if (list[i].id == alarmClass.id) {
+                        list[i].activate = false
+                        Controller.saveAlarmClasses(list, applicationContext)
+                        break
+                    }
+                }
+                Controller.stopAlarm(alarmClass, this)
+                stopService(Intent(this@AlarmActivity, AlarmSoundService::class.java))
+                finish()
+            } else {
+                stopService(Intent(this@AlarmActivity, AlarmSoundService::class.java))
+                finish()
+            }
+        }
     }
 }

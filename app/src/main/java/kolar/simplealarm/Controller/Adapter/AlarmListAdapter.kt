@@ -75,9 +75,15 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmListAdapter.ViewHolder>() {
 
         holder.itemView.switch_activate.setOnCheckedChangeListener { buttonView, isChecked ->
             alarmClass.activate = isChecked
-            if (isChecked)
+            if (isChecked) {
+                val today = Calendar.getInstance()
+                today.set(Calendar.SECOND, 0)
+                today.set(Calendar.MILLISECOND, 0)
+                if(today.timeInMillis > alarmClass.date.timeInMillis){
+                    alarmClass.date.add(Calendar.DAY_OF_MONTH,1)
+                }
                 Controller.startAlarm(alarmClass, holder.context)
-            else
+            } else
                 Controller.stopAlarm(alarmClass, holder.context)
         }
 

@@ -77,9 +77,10 @@ object Controller {
 
     fun startAlarm(alarm: AlarmClass, context: Context) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val pi = PendingIntent.getBroadcast(context, 1, initIntents(alarm, context), PendingIntent.FLAG_UPDATE_CURRENT)
+        val pi = PendingIntent.getBroadcast(context, alarm.id.toInt(), initIntents(alarm, context), PendingIntent.FLAG_UPDATE_CURRENT)
         if (alarm.repeat) {
-            //        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(), startTime, pi)
+            //AlarmManager.INTERVAL_FIFTEEN_MINUTES
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarm.date.timeInMillis, 60000, pi)
         } else {
             if (android.os.Build.VERSION.SDK_INT >= 19) {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarm.date.timeInMillis, pi)
@@ -90,7 +91,7 @@ object Controller {
     }
 
     fun stopAlarm(alarm: AlarmClass, context: Context) {
-        val pi = PendingIntent.getBroadcast(context, 1, initIntents(alarm, context), PendingIntent.FLAG_UPDATE_CURRENT)
+        val pi = PendingIntent.getBroadcast(context, alarm.id.toInt(), initIntents(alarm, context), PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pi)
     }

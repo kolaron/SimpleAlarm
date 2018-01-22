@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SimpleAlarm.iml" filepath="$PROJECT_DIR$/SimpleAlarm.iml" />
+      <module fileurl="file://C:\Users\ondrej.kolar\Documents\simpleAlert\SimpleAlarm.iml" filepath="C:\Users\ondrej.kolar\Documents\simpleAlert\SimpleAlarm.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\ondrej.kolar\Documents\simpleAlert\app\app.iml" filepath="C:\Users\ondrej.kolar\Documents\simpleAlert\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simpleAlert.iml" filepath="$PROJECT_DIR$/simpleAlert.iml" />
     </modules>
   </component>
 </project>

@@ -8,14 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="40dp">
-
-        <kolar.simplealarm.View.ClockView
-            android:id="@+id/ClockView"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
+        android:layout_marginTop="40dp"></RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,6 +27,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:background="@drawable/circle_green"
+                android:clickable="true"
+                android:focusable="true"
                 android:padding="30dp">
 
                 <ImageView
@@ -56,6 +51,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:background="@drawable/circle_red"
+                android:clickable="true"
+                android:focusable="true"
                 android:padding="30dp">
 
                 <ImageView

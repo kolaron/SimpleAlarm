@@ -14,16 +14,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
+
+        <service android:name=".Model.AlarmSoundService" />
+
+        <activity android:name=".View.Activity.AlarmActivity" />
         <activity android:name=".View.Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.Activity.AlarmActivity" />
 
-        <receiver android:name=".Model.AlarmReceiver" />
-        <service android:name=".Model.AlarmSoundService" />
+        <receiver
+            android:name=".Model.AlarmReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
